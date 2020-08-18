@@ -22,13 +22,6 @@ export default {
       message: "",
     };
   },
-  mounted() {
-    fetch("http://localhost:8085/getFiles")
-      .then((response) => response.text())
-      .then((message) => {
-        this.message = message;
-      });
-  },
 };
 </script>
 
@@ -68,7 +61,7 @@ body
     & > .card
       border-radius: 2px
       margin: 1%
-      padding: 2%
+      padding: 3%
       background-color: #a9c8ff
 
       & .primary

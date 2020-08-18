@@ -5,10 +5,10 @@
     <th>Processed</th>
 
     <tbody>
-      <tr>
-        <td>1</td>
-        <td>1</td>
-        <td>1</td>
+      <tr v-for="file in files" :key="file.fileName">
+        <td>{{file.fileName}}</td>
+        <td>{{file.size}}</td>
+        <td>{{file.processedTime}}</td>
       </tr>
     </tbody>
   </table>
@@ -17,13 +17,22 @@
 <script>
 export default {
   name: "v-table",
-  props: {
-    message: String,
-  },
   data() {
     return {
-      count: 0,
+      files: [],
     };
+  },
+  mounted() {
+    fetch("http://localhost:8085/getFileDetails")
+      .then((response) => {
+        console.log(response);
+        return response.text();
+      })
+      .then((fileDetails) => {
+        //this.fileDetails = fileDetails;
+        console.log(fileDetails);
+        this.files = JSON.parse(fileDetails);
+      });
   },
 };
 </script>
