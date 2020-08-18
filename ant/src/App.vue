@@ -1,15 +1,27 @@
 <template>
   <img alt="Vue logo" src="./assets/logo.png" />
-  <HelloWorld msg="Hello Vue 3.0 + Vite" />
+  <HelloWorld :message="message" />
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import HelloWorld from "./components/HelloWorld.vue";
 
 export default {
-  name: 'App',
+  name: "App",
   components: {
-    HelloWorld
-  }
-}
+    HelloWorld,
+  },
+  data() {
+    return {
+      message: "",
+    };
+  },
+  mounted() {
+    fetch("http://localhost:8085/")
+      .then((response) => response.text())
+      .then((message) => {
+        this.message = message;
+      });
+  },
+};
 </script>

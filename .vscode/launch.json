@@ -9,6 +9,16 @@
             "mainClass": "com.ibtest.ib_test.DemoApplication",
             "projectName": "ib_test",
             "args": ""
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-IBApp<ib_test>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "console": "internalConsole",
+            "mainClass": "com.ibtest.IBApp",
+            "projectName": "ib_test",
+            "args": ""
         }
     ]
 }
