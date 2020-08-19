@@ -78,6 +78,7 @@ export default {
         let vueRef = this;
         evtSource.onmessage = function (event) {
           vueRef.files = JSON.parse(event.data);
+          console.log(event);
           clearInterval(id);
           id = null;
         };
