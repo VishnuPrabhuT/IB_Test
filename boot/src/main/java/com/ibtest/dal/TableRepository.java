@@ -6,23 +6,31 @@ import java.util.Date;
 
 import com.ibtest.model.FileItem;
 
+import org.springframework.stereotype.Service;
+
+@Service
 public class TableRepository {
-    public static ArrayList<FileItem> files = null;
+    private ArrayList<FileItem> files = null;
 
     public TableRepository() {
-        TableRepository.files = new ArrayList<FileItem>() {
+        this.files = new ArrayList<FileItem>() {
             {
-                add(new FileItem("file1", 54896, new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(new Date())));
-                add(new FileItem("file2", 54896, new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(new Date())));
-                add(new FileItem("file3", 54896, new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(new Date())));
-                add(new FileItem("file4", 54896, new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(new Date())));
+                add(new FileItem("image.jpg", 54896, new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(new Date())));
+                add(new FileItem("grocery.txt", 777, new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(new Date())));
+                add(new FileItem("todo.txt", 596, new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(new Date())));
+                // add(new FileItem("app.vue", 1700, new SimpleDateFormat("dd-MM-yyyy
+                // HH:mm:ss").format(new Date())));
 
             }
         };
     }
 
     public ArrayList<FileItem> getFileDetailsDAL() {
-        return TableRepository.files;
+        return this.files;
+    }
+
+    public void addFileDetailsDAL(FileItem fileItem) {
+        this.files.add(fileItem);
     }
 
 }

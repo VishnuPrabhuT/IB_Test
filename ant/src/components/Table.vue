@@ -17,22 +17,11 @@
 <script>
 export default {
   name: "v-table",
-  data() {
-    return {
-      files: [],
-    };
-  },
-  mounted() {
-    fetch("http://localhost:8085/getFileDetails")
-      .then((response) => {
-        console.log(response);
-        return response.text();
-      })
-      .then((fileDetails) => {
-        //this.fileDetails = fileDetails;
-        console.log(fileDetails);
-        this.files = JSON.parse(fileDetails);
-      });
+  props: {
+    files: {
+      type: Array,
+      default: [],
+    },
   },
 };
 </script>
