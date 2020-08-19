@@ -4,7 +4,7 @@
     <th>Size (bytes)</th>
     <th>Processed</th>
 
-    <tbody>
+    <tbody :class="{'isError': isError}">
       <tr v-for="file in files" :key="file.fileName">
         <td>{{file.fileName}}</td>
         <td>{{file.size}}</td>
@@ -18,6 +18,10 @@
 export default {
   name: "v-table",
   props: {
+    isError: {
+      type: Boolean,
+      default: false,
+    },
     files: {
       type: Array,
       default: [],

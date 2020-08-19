@@ -12,11 +12,12 @@ export class fetcher {
             } else {
                 throw new Error(response.statusText);
             }
+        }, rej => {
+            return Promise.reject(rej);
         }).then(result => {
             return JSON.parse(result);
         }).catch(err => {
-            console.log(err, "123");
-            Promise.reject("Failed to get files!");
+            return Promise.reject();
         });
     }
 
@@ -34,7 +35,7 @@ export class fetcher {
                 throw new Error("Failed to upload file!");
             }
         }).catch(err => {
-            console.log(err);
+            //console.log(err);
             Promise.reject();
         });
     }

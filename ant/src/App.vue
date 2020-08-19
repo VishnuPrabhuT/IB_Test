@@ -1,11 +1,16 @@
 <template>
   <div class="container">
     <card class="card">
-      <v-table :files="files" />
+      <v-table :files="files" :isError="isDisabled" />
       <div class="error">{{error}}</div>
     </card>
     <card class="card">
-      <button class="primary" @click="openDialog">Upload</button>
+      <button
+        class="primary"
+        :class="{'isDisabled': isDisabled}"
+        @click="openDialog"
+        :disabled="isDisabled"
+      >Upload</button>
       <input
         id="file-input"
         ref="file-input"
@@ -33,19 +38,33 @@ export default {
   },
   data() {
     return {
+      storageLimit: 0,
       files: [],
       error: "",
     };
   },
+  computed: {
+    isDisabled() {
+      return this.files.length >= this.storageLimit;
+    },
+  },
   mounted() {
     fetcher.fetchGET("http://localhost:8085/getFileDetails").then(
       (files) => {
-        console.log(files);
         this.files = files;
         this.getFiles();
       },
       (error) => {
-        this.error = error;
+        this.error = "Failed to get files!";
+      }
+    );
+
+    fetcher.fetchGET("http://localhost:8085/getStorageLimit").then(
+      (storageLimit) => {
+        this.storageLimit = storageLimit;
+      },
+      (error) => {
+        this.error = "Failed to get storageLimit!";
       }
     );
   },
@@ -58,7 +77,6 @@ export default {
         let id;
         let vueRef = this;
         evtSource.onmessage = function (event) {
-          //console.log(event);
           vueRef.files = JSON.parse(event.data);
           clearInterval(id);
           id = null;
@@ -88,8 +106,8 @@ export default {
     addFile(event) {
       let file = event.target.files[0];
 
-      if (file && this.files.length > 3) {
-        this.error = "Cannot upload more than 3 files.";
+      if (file && this.files.length > this.storageLimit) {
+        this.error = `Cannot upload more than ${this.storageLimit} files.`;
         return;
       }
 
@@ -165,4 +183,8 @@ body
         background-color: #497bd5
         color: whitesmoke
         border: 2px solid #313160
+
+        &.isDisabled
+          background-color: darkgrey
+          cursor: not-allowed
 </style>

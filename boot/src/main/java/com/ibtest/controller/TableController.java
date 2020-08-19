@@ -24,17 +24,29 @@ public class TableController {
     @Autowired
     TableRepository _tableRepository = null;
 
-    @GetMapping("/")
-    public String home() {
-        return "Hello from Spring Boot!";
+    // @GetMapping("/")
+    // public String home() {
+    // return "Hello from Spring Boot!";
+    // }
+
+    @GetMapping("/getStorageLimit")
+    public int getStorageLimit() {
+
+        return _tableRepository.getStorageLimit();
     }
 
+    /*
+     * Requirement 1
+     */
     @GetMapping("/getFileDetails")
     public String getFileDetails() {
 
         return _tableRepository.getFileDetailsDAL().toString();
     }
 
+    /*
+     * Requirement 1
+     */
     @Async
     @GetMapping(path = "/streamFileDetails", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<String> streamFileDetails() {
@@ -42,6 +54,9 @@ public class TableController {
         return Flux.interval(Duration.ofSeconds(5)).map(sequence -> _tableRepository.getFileDetailsDAL().toString());
     }
 
+    /*
+     * Requirement 2
+     */
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(path = "/addFileDetails", consumes = MediaType.APPLICATION_JSON_VALUE)
     public void addFileDetails(@RequestBody FileItem fileItem) {
