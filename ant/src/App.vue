@@ -20,6 +20,8 @@
 </template>
 
 <script>
+import { fetcher } from "./modules/fetcher.js";
+
 import VTable from "./components/Table.vue";
 import Card from "./components/Card.vue";
 
@@ -36,22 +38,47 @@ export default {
     };
   },
   mounted() {
-    this.getFiles();
+    fetcher.fetchGET("http://localhost:8085/getFileDetails").then(
+      (files) => {
+        console.log(files);
+        this.files = files;
+        this.getFiles();
+      },
+      (error) => {
+        this.error = error;
+      }
+    );
   },
   methods: {
+    setupSSE() {
+      let evtSource = new EventSource(
+        "http://localhost:8085/streamFileDetails"
+      );
+      try {
+        let id;
+        let vueRef = this;
+        evtSource.onmessage = function (event) {
+          //console.log(event);
+          vueRef.files = JSON.parse(event.data);
+          clearInterval(id);
+          id = null;
+        };
+      } catch {
+        throw new Error();
+      }
+      return evtSource;
+    },
     getFiles() {
-      let evtSource = new EventSource("http://localhost:8085/getFileDetails");
-      let id;
       let vueRef = this;
-      evtSource.onmessage = function (event) {
-        vueRef.files = JSON.parse(event.data);
-        //console.log(event.data);
-        clearInterval(id);
-        id = null;
-      };
+      let evtSource = this.setupSSE();
       evtSource.onerror = function (event) {
-        if (!id) {
-          id = setInterval(window.location.reload(), 2500);
+        evtSource.close();
+        try {
+          evtSource = this.setupSSE();
+        } catch {
+          setTimeout(() => {
+            vueRef.getFiles();
+          }, 5000);
         }
       };
     },
@@ -60,7 +87,6 @@ export default {
     },
     addFile(event) {
       let file = event.target.files[0];
-      //console.log(file);
 
       if (file && this.files.length > 3) {
         this.error = "Cannot upload more than 3 files.";
@@ -76,26 +102,14 @@ export default {
         processedTime: `${date} ${time}`,
       };
 
-      fetch("http://localhost:8085/addFileDetails", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(fileItem),
-      })
-        .then((response) => {
-          if (response.ok) {
-            Promise.resolve(response);
-          } else {
-            throw new Error("Failed to upload file!");
-          }
-        })
-        .then((result) => {
+      fetcher.fetchPOST("http://localhost:8085/addFileDetails", fileItem).then(
+        (result) => {
           this.files.push(fileItem);
-        })
-        .catch((error) => {
+        },
+        (error) => {
           this.error = error;
-        });
+        }
+      );
     },
   },
 };

@@ -29,9 +29,15 @@ public class TableController {
         return "Hello from Spring Boot!";
     }
 
+    @GetMapping("/getFileDetails")
+    public String getFileDetails() {
+
+        return _tableRepository.getFileDetailsDAL().toString();
+    }
+
     @Async
-    @GetMapping(path = "/getFileDetails", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public Flux<String> getFileDetails() {
+    @GetMapping(path = "/streamFileDetails", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public Flux<String> streamFileDetails() {
 
         return Flux.interval(Duration.ofSeconds(5)).map(sequence -> _tableRepository.getFileDetailsDAL().toString());
     }
