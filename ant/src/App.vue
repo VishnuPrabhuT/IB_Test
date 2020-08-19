@@ -40,17 +40,20 @@ export default {
   },
   methods: {
     getFiles() {
-      fetch("http://localhost:8085/getFileDetails")
-        .then((response) => {
-          return response.text();
-        })
-        .then((fileDetails) => {
-          //console.log(fileDetails);
-          this.files = JSON.parse(fileDetails);
-        })
-        .catch((error) => {
-          this.error = error;
-        });
+      let evtSource = new EventSource("http://localhost:8085/getFileDetails");
+      let id;
+      let vueRef = this;
+      evtSource.onmessage = function (event) {
+        vueRef.files = JSON.parse(event.data);
+        //console.log(event.data);
+        clearInterval(id);
+        id = null;
+      };
+      evtSource.onerror = function (event) {
+        if (!id) {
+          id = setInterval(window.location.reload(), 2500);
+        }
+      };
     },
     openDialog() {
       this.$refs["file-input"].click();

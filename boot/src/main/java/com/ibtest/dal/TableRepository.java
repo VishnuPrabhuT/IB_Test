@@ -18,9 +18,6 @@ public class TableRepository {
                 add(new FileItem("image.jpg", 54896, new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(new Date())));
                 add(new FileItem("grocery.txt", 777, new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(new Date())));
                 add(new FileItem("todo.txt", 596, new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(new Date())));
-                // add(new FileItem("app.vue", 1700, new SimpleDateFormat("dd-MM-yyyy
-                // HH:mm:ss").format(new Date())));
-
             }
         };
     }
